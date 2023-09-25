@@ -1,0 +1,95 @@
+﻿@echo off
+
+echo This is script to configure network settings.
+:optionChoice
+echo 1) Configure
+echo 2) See info
+echo 0) Exit
+set /p option=What do you want? 
+
+if %option%==0 exit
+if %option%==1 GoTo interfaceChoice
+if %option%==2 GoTo Info
+echo ===============================================================================
+GoTo optionChoice
+
+
+:interfaceChoice
+echo.
+echo 1) Ethernet
+echo 2) Npcap Loopback Adapter
+set /p interface=What interface? 
+
+if %interface%==1 (
+set interface=Ethernet
+GoTo modeChoice
+)
+
+if %interface%==2 (
+set interface=Npcap Loopback Adapter
+GoTo modeChoice
+)
+
+GoTo optionChoice
+
+
+
+:modeChoice
+echo.
+echo 1) Auto
+echo 2) Manual
+set /p mode=How do you prefer set configure?
+if %mode%==1 GoTo Auto
+if %mode%==2 GoTo Manual
+GoTo optionChoice
+
+
+
+:Auto
+echo.
+echo Auto configuring paramers...
+netsh interface ipv4 set address name=%interface% source=dhcp
+
+echo Auto configuring DNS...
+netsh interface ipv4 set dns name=%interface% source=dhcp
+
+netsh interface ipv4 show address
+echo ===============================================================================
+GoTo optionChoice
+
+
+
+:Manual
+set address="192.168.1.10"
+set mask="255.255.255.0"
+set gateway="192.168.1.1"
+set dns="8.8.8.8"
+
+echo.
+echo Manual configuring paramers...
+netsh interface ipv4 set address name=%interface% static %address% %mask% %gateway%
+
+echo Manual configuring DNS...
+netsh interface ipv4 set dns name=%interface% static %dns%
+
+netsh interface ipv4 show address
+echo ===============================================================================
+GoTo optionChoice
+
+
+
+:Info
+echo.
+ipconfig
+echo ===============================================================================
+netsh interface ipv4 show address
+echo ===============================================================================
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo ===============================================================================
+GoTo optionChoice
+

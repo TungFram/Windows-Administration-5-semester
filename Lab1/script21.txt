@@ -1,0 +1,9 @@
+﻿@echo off
+set /p str=Enter string with 4 symbols:
+
+set username=UPart2%str%
+set groupname=GPart2%str%
+
+net user %username% /add
+net localgroup %groupname% /add /y
+net localgroup %groupname% %username% /add
